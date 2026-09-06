@@ -78,6 +78,7 @@ vim.pack.add({
   { src = "https://github.com/hrsh7th/cmp-buffer" },
   { src = "https://github.com/hrsh7th/cmp-path" },
   { src = "https://github.com/L3MON4D3/LuaSnip" },
+  { src = "https://github.com/dsznajder/vscode-es7-javascript-react-snippets" }, -- the actual "rnfec" etc. snippet pack VS Code users know
   { src = "https://github.com/saadparwaiz1/cmp_luasnip" },
 
   -- Formatting (Biome handles JS/TS/JSON formatting + linting via its LSP;
@@ -108,6 +109,7 @@ vim.pack.add({
   -- Autopairs + comments (small but very VS Code-ish QoL)
   { src = "https://github.com/windwp/nvim-autopairs" },
   { src = "https://github.com/numToStr/Comment.nvim" },
+  { src = "https://github.com/windwp/nvim-ts-autotag" }, -- auto-close/rename JSX/TSX tags
 
   -- Inline error/warning virtual text made prettier
   { src = "https://github.com/folke/trouble.nvim" },
@@ -251,6 +253,13 @@ cmp.setup({
   }),
 })
 
+-- Load the actual ES7 React/Redux/React-Native VS Code snippet pack
+-- (the real source of "rnfec" and friends), instead of reimplementing
+-- individual snippets by hand.
+require("luasnip.loaders.from_vscode").lazy_load({
+  paths = { vim.fn.stdpath("data") .. "/site/pack/core/opt/vscode-es7-javascript-react-snippets" },
+})
+
 -------------------------------------------------------------------
 -- 7. Formatting (Biome for JS/TS/JSON/JSX; conform falls back to other
 --    tools for filetypes Biome doesn't format)
@@ -345,6 +354,7 @@ require("bufferline").setup({})
 -- 12. QoL: autopairs, comments, diagnostics list, which-key
 -------------------------------------------------------------------
 require("nvim-autopairs").setup({})
+require("nvim-ts-autotag").setup({})
 require("Comment").setup({})
 require("trouble").setup({})
 require("which-key").setup({})
@@ -375,6 +385,12 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to window below" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to window above" })
+
+-- Move line(s) up/down (VS Code's Alt+Up/Down)
+vim.keymap.set("n", "<A-j>", "<cmd>m .+1<CR>==", { desc = "Move line down" })
+vim.keymap.set("n", "<A-k>", "<cmd>m .-2<CR>==", { desc = "Move line up" })
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -------------------------------------------------------------------
 -- 14. Helper command to bulk-install Mason tools + stylua
