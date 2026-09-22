@@ -128,6 +128,8 @@ vim.cmd.colorscheme("tokyonight")
 -- only installs parsers now. Highlighting/indent/folding are wired up
 -- manually below using Neovim's own treesitter (this is the officially
 -- documented way to do it post-rewrite).
+-- Parser names to install (treesitter's own naming — differs from vim
+-- filetype names in a few important cases, see below)
 local ts_langs = {
   "typescript", "tsx", "javascript", "json",
   "html", "css", "scss", "graphql",
@@ -140,8 +142,19 @@ require("nvim-treesitter").install(ts_langs)
 -- jsonc has no parser of its own; it reuses the "json" grammar
 vim.treesitter.language.register("json", "jsonc")
 
+-- The FileType autocmd below must match on vim *filetypes*, not parser
+-- names — they differ for JSX/TSX/help/shell, which is why folding
+-- wasn't working on .tsx/.jsx files before this fix.
+local ft_list = {
+  "typescript", "typescriptreact", "javascript", "javascriptreact",
+  "json", "jsonc",
+  "html", "css", "scss", "graphql",
+  "sql", "yaml", "markdown",
+  "lua", "vim", "help", "sh", "bash", "dockerfile", "gitignore",
+}
+
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { unpack(ts_langs), "jsonc" },
+  pattern = ft_list,
   callback = function()
     -- Highlighting
     vim.treesitter.start()
