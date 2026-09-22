@@ -61,7 +61,7 @@ opt.foldenable = true
 
 vim.pack.add({
   -- Colorscheme
-  { src = "https://github.com/folke/tokyonight.nvim" },
+  { src = "https://github.com/sainnhe/everforest" },
 
   -- Treesitter: real syntax highlighting/parsing (this pulls the `main`
   -- branch, i.e. the new rewritten nvim-treesitter — see setup below)
@@ -118,7 +118,12 @@ vim.pack.add({
   { src = "https://github.com/folke/which-key.nvim" },
 })
 
-vim.cmd.colorscheme("tokyonight")
+-- Everforest options must be set before the colorscheme is applied
+vim.o.background = "dark" -- or "light"
+vim.g.everforest_background = "medium" -- "hard", "medium", or "soft"
+vim.g.everforest_better_performance = 1
+
+vim.cmd.colorscheme("everforest")
 
 -------------------------------------------------------------------
 -- 3. Treesitter — parsers for your stack
@@ -360,7 +365,7 @@ vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<CR>", { desc = "Open LazyGit" })
 -------------------------------------------------------------------
 -- 11. Statusline + buffer tabs
 -------------------------------------------------------------------
-require("lualine").setup({ options = { theme = "tokyonight" } })
+require("lualine").setup({ options = { theme = "everforest" } })
 require("bufferline").setup({})
 
 -------------------------------------------------------------------
