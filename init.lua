@@ -100,6 +100,9 @@ vim.pack.add({
   -- Source Control panel equivalent, wraps the `lazygit` CLI
   { src = "https://github.com/kdheepak/lazygit.nvim" },
 
+  -- Integrated terminal panel (toggleable, VS Code's Ctrl+` equivalent)
+  { src = "https://github.com/akinsho/toggleterm.nvim" },
+
   -- Statusline
   { src = "https://github.com/nvim-lualine/lualine.nvim" },
 
@@ -324,6 +327,34 @@ vim.keymap.set("n", "<leader>fs", tb.lsp_document_symbols, { desc = "Document sy
 -------------------------------------------------------------------
 require("nvim-tree").setup({})
 vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
+
+-------------------------------------------------------------------
+-- 9b. Integrated terminal (toggleterm) — VS Code's Ctrl+` panel
+-------------------------------------------------------------------
+require("toggleterm").setup({
+  size = 15,
+  open_mapping = [[<C-`>]],   -- Ctrl+` toggles it, same as VS Code
+  direction = "horizontal",   -- "float", "vertical", or "tab" also available
+  shade_terminals = true,
+  start_in_insert = true,
+})
+
+-- Easier way to get back to normal mode while inside the terminal
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
+
+-- Window navigation also needs terminal-mode versions — otherwise Ctrl+hjkl
+-- gets swallowed by the shell instead of switching windows while a
+-- terminal panel is focused
+vim.keymap.set("t", "<C-h>", [[<C-\><C-n><C-w>h]], { desc = "Move to left window" })
+vim.keymap.set("t", "<C-l>", [[<C-\><C-n><C-w>l]], { desc = "Move to right window" })
+vim.keymap.set("t", "<C-j>", [[<C-\><C-n><C-w>j]], { desc = "Move to window below" })
+vim.keymap.set("t", "<C-k>", [[<C-\><C-n><C-w>k]], { desc = "Move to window above" })
+
+-- A couple of extra ways to open one, since Ctrl+` doesn't register in
+-- every terminal emulator the same way
+vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", { desc = "Toggle terminal" })
+vim.keymap.set("n", "<leader>tf", "<cmd>ToggleTerm direction=float<CR>", { desc = "Toggle floating terminal" })
+vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>", { desc = "Toggle vertical terminal" })
 
 -------------------------------------------------------------------
 -- 10. Git signs + git keymaps
